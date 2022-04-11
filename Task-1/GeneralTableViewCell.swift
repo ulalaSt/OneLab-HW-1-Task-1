@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 class GeneralTableViewCell: UITableViewCell {
     static let identifier = "GeneralTableViewCell"
-    
+    var updated = false
     var switcher: UISwitch = {
         let switcher = UISwitch()
         return switcher
@@ -23,53 +23,53 @@ class GeneralTableViewCell: UITableViewCell {
         button.setTitleColor(.lightGray, for: .normal)
         return button
     }()
+    var label = UILabel()
+    var segmentedControl = UISegmentedControl()
     
     func updateSubviews(right type: RightUI, left text: String){
-        let label = UILabel()
+        updated = true
         contentView.addSubview(label)
         label.text = text
         label.snp.makeConstraints { make in
             make.left.equalToSuperview().inset(20)
             make.height.equalToSuperview()
             make.top.equalToSuperview()
+            make.width.equalToSuperview()
         }
+        
         switch type {
         case .none:
             break
+            
         case .switcher:
             contentView.addSubview(switcher)
             switcher.snp.makeConstraints { make in
                 make.right.equalToSuperview().inset(20)
                 make.centerY.equalToSuperview()
             }
+            switcher.addTarget(self, action: #selector(switchTapped(_:)), for: .touchUpInside)
+            
         case .picker(let array):
-            guard !array.isEmpty else {
-                print("Picker can not be Empty")
-                return
-            }
             contentView.addSubview(pickerButton)
-            pickerButton.setTitle("\(array[0])", for: .normal)
+            if !array.isEmpty {
+                pickerButton.setTitle("\(array[0])", for: .normal)
+            }
+            self.accessoryType = .disclosureIndicator
             pickerButton.snp.makeConstraints { make in
                 make.right.equalToSuperview().inset(20)
                 make.centerY.equalToSuperview()
             }
-            self.accessoryType = .disclosureIndicator
             pickerButton.addTarget(self, action: #selector(pickerButtonTapped), for: .touchUpInside)
-//            pickerVC.modalPresentationStyle = .overCurrentContext
-//            pickerVC.preferredContentSize = CGSize(width: 300, height: 300)
-//            pickerVC.modalTransitionStyle = .crossDissolve
-//
-//            let pVC = pickerVC.popoverPresentationController
-//            pVC?.permittedArrowDirections = .any
-//            pVC?.delegate = self
-//            pVC?.sourceView = pickerButton
-//            pVC?.sourceRect = CGRect(x: 100, y: 100, width: 1, height: 1)
+        
         case .segmentedControl(let array):
-            let segmentedControl = UISegmentedControl(items: array)
-            contentView.addSubview(segmentedControl)
-            segmentedControl.selectedSegmentIndex = 1
+            let segmentedC = UISegmentedControl(items: array)
+            self.segmentedControl = segmentedC
+            segmentedControl.selectedSegmentIndex = 0
+            segmentedControl.selectedSegmentTintColor = .systemBlue
+            segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
             segmentedControl.addTarget(self, action: #selector(self.segmentedValueChanged(_:)), for: .valueChanged)
             contentView.addSubview(segmentedControl)
+
             segmentedControl.snp.makeConstraints { make in
                 make.right.equalToSuperview().inset(20)
                 make.centerY.equalToSuperview()
@@ -82,6 +82,13 @@ class GeneralTableViewCell: UITableViewCell {
         }
     }
     @objc private func pickerButtonTapped(){
-        print("pickerButtonTapped")
+        print("Never >")
+    }
+    @objc private func switchTapped(_ switcher: UISwitch){
+        if switcher.isOn {
+            print("Switch on")
+        } else {
+            print("Switch off")
+        }
     }
 }

@@ -15,13 +15,16 @@ class ViewController: UIViewController {
     private var tableView: UITableView = {
         let table = UITableView()
         table.backgroundColor = .secondarySystemBackground
-        table.register(GeneralTableViewCell.self, forCellReuseIdentifier: GeneralTableViewCell.identifier)
-        table.register(DateTableViewCell.self, forCellReuseIdentifier: DateTableViewCell.identifier)
+//        table.register(GeneralTableViewCell.self, forCellReuseIdentifier: GeneralTableViewCell.identifier)
+//        table.register(DateTableViewCell.self, forCellReuseIdentifier: DateTableViewCell.identifier)
         return table
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
         configure()
     }
     
@@ -49,10 +52,12 @@ class ViewController: UIViewController {
                                          action: #selector(leftFunction))
         navigationItem.leftBarButtonItem = leftButton
 
-        view.addSubview(tableView)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.frame = view.bounds
+        tableView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
         tableView.sectionHeaderHeight = 0
     }
         
@@ -81,12 +86,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch row {
         case .general(let rightUI, let text):
-            let cell = tableView.dequeueReusableCell(withIdentifier: GeneralTableViewCell.identifier, for: indexPath) as! GeneralTableViewCell
+            let cell = GeneralTableViewCell(style: .default, reuseIdentifier: "general")
             cell.updateSubviews(right: rightUI, left: text)
             return cell
             
         case .date:
-            let cell = tableView.dequeueReusableCell(withIdentifier: DateTableViewCell.identifier, for: indexPath) as! DateTableViewCell
+            let cell = DateTableViewCell(style: .default, reuseIdentifier: "date")
             cell.backgroundColor = .white
             return cell
         }
@@ -102,6 +107,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return viewModel.heightForGeneralCell/2
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        print("row is tapped")
     }
 }
 

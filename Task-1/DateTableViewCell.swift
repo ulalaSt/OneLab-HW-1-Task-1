@@ -30,23 +30,24 @@ class DateTableViewCell: UITableViewCell {
         handler(sender: datePicker)
         contentView.addSubview(datePicker)
         contentView.addSubview(label)
+        layoutViews()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func layoutSubviews() {
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+    private func layoutViews() {
 
         label.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().inset(20)
-            make.height.equalTo(contentView.frame.height/7)
+            make.height.equalTo(40)
         }
         datePicker.snp.makeConstraints { make in
             make.top.equalTo(label.snp.bottom)
-            make.width.equalToSuperview()
             make.bottom.equalToSuperview()
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
         }
     }
     @objc func handler(sender: UIDatePicker) {
@@ -54,6 +55,7 @@ class DateTableViewCell: UITableViewCell {
         timeFormatter.dateStyle = DateFormatter.Style.full
         timeFormatter.timeStyle = DateFormatter.Style.short
         let strDate = timeFormatter.string(from: datePicker.date).replacingOccurrences(of: " at", with: ",")
+        print("Date chagned to: \(strDate)")
         label.text = strDate
     }
 

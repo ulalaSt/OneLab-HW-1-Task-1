@@ -22,6 +22,7 @@ class ViewModel {
             .date,
             .general(.picker(["Never", "Every day", "Every week", "Every month", "Every year"]), "Repeat")],
         [.general(.switcher, "Remind me at a location")],
-        [.general(.segmentedControl(["None", "!", "!!", "!!!"]), "Priority"), .general(.none, "Notes")]
+        [.general(.segmentedControl(["None", "!", "!!", "!!!"]), "Priority"),
+            .general(.none, "Notes")]
     ]
 }
